@@ -3,9 +3,11 @@
   "description": "",
   "main": "server/src/server.js",
   "type": "module",
-    "scripts": {
+  "scripts": {
     "start": "cd server && npm run start",
-    "install": "cd server && npm i"
+    "install": "cd server && npm i",
+    "build:client": "cd client && npm install && npm run build",
+    "build": "npm run install && npm run build:client"
   },
   "author": "",
   "license": "ISC",
