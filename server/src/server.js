@@ -28,8 +28,8 @@ const startApolloServer = async () => {
 
   // if we're in production, serve client/dist as static assets
   if (process.env.NODE_ENV === 'production') {
-    // Commenting out until client/dist exists after Day 3
     app.use(express.static(path.join(__dirname, '../../client/dist')));
+
     app.get('*', (_req, res) => {
       res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
     });
@@ -37,9 +37,10 @@ const startApolloServer = async () => {
   
   db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+  const host = process.env.NODE_ENV === 'production' ? 'your-render-url.onrender.com' : 'localhost';
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
-    console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+    console.log(`Use GraphQL at https://${host}:${PORT === 443 ? '' : PORT}/graphql`);
   });
 };
 
