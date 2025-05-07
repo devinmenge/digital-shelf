@@ -1,28 +1,41 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery, gql } from '@apollo/client';
 import './Header.css';
 
-const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const ME = gql`
+  query me {
+    me {
+      username
+    }
+  }
+`;
 
-  const handleLoginToggle = () => {
-    setIsLoggedIn(!isLoggedIn);
-    // Placeholder: Replace with real auth logic (e.g., API call to server)
+const Header = () => {
+  const token = localStorage.getItem('id_token');
+  const { data, error } = useQuery(ME, { skip: !token }); // Skip query if not logged in
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('id_token');
+    navigate('/');
   };
 
+  const isLoggedIn = !!token && !error; // Consider logged in if token exists and no auth error
+  const username = data?.me?.username;
+
   return (
-    <header className="header">
-      <Link to="/" className="header-title">
-        Game Search App
-      </Link>
-      <div className="header-nav">
-        <Link to="/" className="nav-link">
-          Home
-        </Link>
-        <button onClick={handleLoginToggle} className="login-button">
-          {isLoggedIn ? 'Logout' : 'Login'}
-        </button>
-      </div>
+    <header>
+      <h1>Digital Shelf</h1>
+      <nav>
+        <Link to="/">Search Games</Link>
+        <Link to="/my-shelf">My Shelf{isLoggedIn && username ? ` (${username})` : ''}</Link>
+        {isLoggedIn ? (
+          <button onClick={handleLogout}>Log Out</button>
+        ) : (
+          <Link to="/auth">Log In / Sign Up</Link>
+        )}
+      </nav>
     </header>
   );
 };

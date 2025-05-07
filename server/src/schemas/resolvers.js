@@ -1,4 +1,6 @@
+// server/src/schemas/resolvers.js
 import { User } from '../models/User.js';
+import Collection from '../models/Collection.js'; // Import the new Collection model
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -10,6 +12,10 @@ const resolvers = {
     me: async (parent, args, context) => {
       if (!context.user) throw new Error('Not authenticated');
       return await User.findById(context.user._id);
+    },
+    myCollection: async (parent, args, context) => {
+      if (!context.user) throw new Error('Not authenticated');
+      return await Collection.find({ userId: context.user._id });
     },
   },
   Mutation: {
@@ -30,6 +36,24 @@ const resolvers = {
       if (!valid) throw new Error('Invalid password');
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '1h' });
       return { token, user };
+    },
+    addGameToCollection: async (parent, { gameId, name }, context) => {
+      if (!context.user) throw new Error('Not authenticated');
+      const newGame = await Collection.create({
+        gameId,
+        name,
+        userId: context.user._id,
+      });
+      return newGame;
+    },
+    removeGameFromCollection: async (parent, { gameId }, context) => {
+      if (!context.user) throw new Error('Not authenticated');
+      const game = await Collection.findOneAndDelete({
+        gameId,
+        userId: context.user._id,
+      });
+      if (!game) throw new Error('Game not found in collection');
+      return game;
     },
   },
 };
