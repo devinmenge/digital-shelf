@@ -15,7 +15,7 @@ const GET_MY_COLLECTION = gql`
 
 const MyShelf = () => {
   const token = localStorage.getItem('id_token');
-  const { loading, error, data } = useQuery(GET_MY_COLLECTION, { skip: !token });
+  const { loading, error, data } = useQuery(GET_MY_COLLECTION);
 
   if (!token) {
     return (

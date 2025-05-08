@@ -1,10 +1,8 @@
-// server/src/schemas/resolvers.js
 import { User } from '../models/User.js';
-import Collection from '../models/Collection.js'; // Import the new Collection model
+import Collection from '../models/Collection.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// Secret for JWT (store this in .env in production)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 const resolvers = {

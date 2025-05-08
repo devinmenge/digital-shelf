@@ -16,7 +16,7 @@ const LOGIN = gql`
 
 const SIGNUP = gql`
   mutation signup($username: String!, $email: String!, $password: String!) {
-    signup(username: $email, email: $email, password: $password) {
+    signup(username: $username, email: $email, password: $password) {
       token
       user {
         _id
@@ -27,7 +27,7 @@ const SIGNUP = gql`
 `;
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -40,12 +40,16 @@ const Auth = () => {
     try {
       if (isLogin) {
         const { data } = await login({ variables: { email, password } });
+        console.log('Login token:', data.login.token);
         localStorage.setItem('id_token', data.login.token);
-        navigate('/my-shelf');
+        console.log('Stored token in localStorage:', localStorage.getItem('id_token')); // Debug log
+        window.location.assign('/my-shelf');
       } else {
         const { data } = await signup({ variables: { username, email, password } });
+        console.log('Signup token:', data.signup.token);
         localStorage.setItem('id_token', data.signup.token);
-        navigate('/my-shelf');
+        console.log('Stored token in localStorage:', localStorage.getItem('id_token')); // Debug log
+        window.location.assign('/my-shelf');
       }
     } catch (e) {
       console.error(e);

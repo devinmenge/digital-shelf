@@ -13,7 +13,7 @@ const ME = gql`
 
 const Header = () => {
   const token = localStorage.getItem('id_token');
-  const { data, error } = useQuery(ME, { skip: !token }); // Skip query if not logged in
+  const { data, error } = useQuery(ME); // Skip query if not logged in
   const navigate = useNavigate();
 
   const handleLogout = () => {

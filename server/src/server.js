@@ -4,7 +4,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import jwt from 'jsonwebtoken';
+import { authenticateToken } from './utils/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,23 +14,10 @@ import db from './config/connection.js';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
-    const token = req.headers.authorization || '';
-    if (token.startsWith('Bearer ')) {
-      try {
-        const decoded = jwt.verify(token.split(' ')[1], JWT_SECRET);
-        return { user: decoded };
-      } catch (err) {
-        console.log('Invalid token');
-      }
-    }
-    return { user: null };
-  },
 });
 
 const startApolloServer = async () => {
@@ -39,9 +26,13 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   
-  app.use('/graphql', expressMiddleware(server));
+  app.use('/graphql', expressMiddleware(server, {
+    context: async ({ req }) => {
+      const authenticatedReq = await authenticateToken({ req });
+      return { user: authenticatedReq.user || null };
+    },
+  }));
 
-  // if we're in production, serve client/dist as static assets
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../../client/dist')));
 
