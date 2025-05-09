@@ -35,11 +35,14 @@ const resolvers = {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '1h' });
       return { token, user };
     },
-    addGameToCollection: async (parent, { gameId, name }, context) => {
+    addGameToCollection: async (parent, { gameId, name, imageUrl }, context) => {
       if (!context.user) throw new Error('Not authenticated');
+      const existingGame = await Collection.findOne({ userId: context.user._id, gameId });
+      if (existingGame) throw new Error('Game already in collection');
       const newGame = await Collection.create({
         gameId,
         name,
+        imageUrl,
         userId: context.user._id,
       });
       return newGame;
@@ -51,6 +54,18 @@ const resolvers = {
         userId: context.user._id,
       });
       if (!game) throw new Error('Game not found in collection');
+      return game;
+    },
+    updateComment: async (parent, { gameId, comment }, context) => {
+      if (!context.user) throw new Error('Not authenticated');
+      console.log(`Updating comment for gameId: ${gameId}, userId: ${context.user._id}, comment: ${comment}`);
+      const game = await Collection.findOneAndUpdate(
+        { gameId, userId: context.user._id },
+        { comment },
+        { new: true }
+      );
+      if (!game) throw new Error('Game not found in collection');
+      console.log(`Updated game: ${JSON.stringify(game)}`);
       return game;
     },
   },

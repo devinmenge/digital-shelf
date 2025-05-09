@@ -1,4 +1,3 @@
-// server/src/schemas/typeDefs.js
 const typeDefs = `
   type User {
     _id: ID!
@@ -16,6 +15,8 @@ const typeDefs = `
     _id: ID!
     gameId: String!
     name: String!
+    imageUrl: String
+    comment: String
     userId: ID!
   }
 
@@ -27,8 +28,9 @@ const typeDefs = `
   type Mutation {
     signup(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addGameToCollection(gameId: String!, name: String!): Collection
+    addGameToCollection(gameId: String!, name: String!, imageUrl: String): Collection
     removeGameFromCollection(gameId: String!): Collection
+    updateComment(gameId: String!, comment: String!): Collection
   }
 `;
 

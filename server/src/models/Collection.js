@@ -1,4 +1,3 @@
-// server/src/models/Collection.js
 import mongoose from "mongoose";
 
 const CollectionSchema = new mongoose.Schema({
@@ -9,6 +8,13 @@ const CollectionSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+  },
+  imageUrl: {
+    type: String,
+  },
+  comment: {
+    type: String,
+    default: "",
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
