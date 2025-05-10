@@ -13,7 +13,7 @@ const ME = gql`
 
 const Header = () => {
   const token = localStorage.getItem('id_token');
-  const { data, error } = useQuery(ME); // Skip query if not logged in
+  const { data, error } = useQuery(ME);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,19 +21,19 @@ const Header = () => {
     navigate('/');
   };
 
-  const isLoggedIn = !!token && !error; // Consider logged in if token exists and no auth error
+  const isLoggedIn = !!token && !error;
   const username = data?.me?.username;
 
   return (
-    <header>
-      <h1>Digital Shelf</h1>
-      <nav>
-        <Link to="/">Search Games</Link>
-        <Link to="/my-shelf">My Shelf{isLoggedIn && username ? ` (${username})` : ''}</Link>
+    <header className="header">
+      <h1 className="header-title">Digital Shelf</h1>
+      <nav className="header-nav">
+        <Link to="/" className="nav-link">Search Games</Link>
+        <Link to="/my-shelf" className="nav-link">My Shelf{isLoggedIn && username ? ` (${username})` : ''}</Link>
         {isLoggedIn ? (
-          <button onClick={handleLogout}>Log Out</button>
+          <button onClick={handleLogout} className="login-button">Log Out</button>
         ) : (
-          <Link to="/auth">Log In / Sign Up</Link>
+          <Link to="/auth" className="nav-link">Log In / Sign Up</Link>
         )}
       </nav>
     </header>

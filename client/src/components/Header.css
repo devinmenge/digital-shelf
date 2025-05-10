@@ -1,45 +1,46 @@
 .header {
-    background-color: #1e90ff;
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-title {
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
-  }
-  
-  .header-nav {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  
-  .nav-link {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
-  
-  .login-button {
-    background-color: white;
-    color: #1e90ff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .login-button:hover {
-    background-color: #e0e0e0;
-  }
+  background-color: #b7d6ff; /* Red background, adjust as needed */
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center; /* Vertically center the title and nav */
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  margin: 0; /* Remove default margin for better alignment */
+}
+
+.header-nav {
+  display: flex;
+  gap: 20px; /* Nice spacing between nav elements */
+  align-items: center;
+  margin-left: auto; /* Push the nav to the right */
+}
+
+.nav-link {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  background-color: white;
+  color: #ff0000; /* Match the header background for contrast */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-button:hover {
+  background-color: #e0e0e0;
+}

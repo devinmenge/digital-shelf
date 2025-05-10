@@ -1,0 +1,123 @@
+.my-shelf {
+    margin-top: 20px;
+  }
+  
+  .my-shelf ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .my-shelf .game-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    list-style: none !important;
+    padding: 0;
+  }
+  
+  .game-item {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+  .game-link {
+    text-decoration: none;
+    color: #1e90ff;
+  }
+  
+  .game-link:hover {
+    text-decoration: underline;
+  }
+  
+  .game-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px;
+  }
+  
+  .game-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .remove-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  .remove-button:hover {
+    background-color: #e64444;
+  }
+  
+  .comment-section {
+    margin-top: 10px;
+  }
+  
+  .comment-text {
+    color: #333;
+    font-size: 14px;
+    margin: 0 0 10px;
+    word-wrap: break-word;
+  }
+  
+  .comment-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+  }
+  
+  .review-button {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float:right
+  }
+  
+  .review-button:hover {
+    background-color: #1c86ee;
+  }
+  
+  .review-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .toggle-review-button {
+    background: none;
+    border: none;
+    color: #1e90ff;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .toggle-review-button:hover {
+    color: #1c86ee;
+  }
+  
+  .error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .my-shelf .game-list {
+      grid-template-columns: 1fr;
+    }
+  }

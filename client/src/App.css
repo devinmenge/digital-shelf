@@ -6,6 +6,7 @@ body {
 .app {
   min-height: 100vh;
   background-color: #f0f0f0;
+  width: 100%; /* Ensure it stretches to full width */
 }
 
 .container {

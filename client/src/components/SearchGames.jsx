@@ -107,7 +107,7 @@ const SearchGames = () => {
                 disabled={addedGames.has(game.id)}
                 className={addedGames.has(game.id) ? "added" : "add-button"}
               >
-                {addedGames.has(game.id) ? "Added" : "Add to Collection"}
+                {addedGames.has(game.id) ? "✓" : "+"}
               </button>
             ) : (
               <p>

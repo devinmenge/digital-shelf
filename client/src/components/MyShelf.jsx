@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, gql } from "@apollo/client";
 import "../App.css";
+import "./MyShelf.css";
 
 const GET_MY_COLLECTION = gql`
   query MyCollection {
@@ -43,10 +44,10 @@ const MyShelf = () => {
   const [comments, setComments] = useState({});
   const [localComments, setLocalComments] = useState({});
   const [editMode, setEditMode] = useState({});
+  const [expandedReviews, setExpandedReviews] = useState({}); // New state for expanded reviews
   const [mutationError, setMutationError] = useState(null);
   const [saving, setSaving] = useState({});
 
-  // Debug when data updates
   useEffect(() => {
     console.log('useQuery data updated:', data);
   }, [data]);
@@ -74,9 +75,8 @@ const MyShelf = () => {
         return;
       }
       console.log(`Saving comment for gameId: ${gameId}, comment: ${comment}`);
-      // Update local state immediately
       setLocalComments(prev => ({ ...prev, [gameId]: comment }));
-      setEditMode(prev => ({ ...prev, [gameId]: false })); // Exit edit mode immediately
+      setEditMode(prev => ({ ...prev, [gameId]: false }));
       await updateComment({ variables: { gameId, comment } });
       setComments(prev => {
         const newComments = { ...prev };
@@ -84,11 +84,10 @@ const MyShelf = () => {
         return newComments;
       });
       setMutationError(null);
-      await refetch(); // Await refetch to ensure data is updated
+      await refetch();
     } catch (error) {
       console.error('Error saving comment:', error);
       setMutationError('Failed to save comment: ' + error.message);
-      // Revert local comment on error
       setLocalComments(prev => {
         const newLocalComments = { ...prev };
         delete newLocalComments[gameId];
@@ -105,6 +104,12 @@ const MyShelf = () => {
     }
     setEditMode(prev => ({ ...prev, [gameId]: !prev[gameId] }));
   };
+
+  const toggleReviewExpand = (gameId) => {
+    setExpandedReviews(prev => ({ ...prev, [gameId]: !prev[gameId] }));
+  };
+
+  const PREVIEW_LENGTH = 75; // Number of characters to show in the preview
 
   if (!token) {
     return (
@@ -127,48 +132,65 @@ const MyShelf = () => {
       {data.myCollection.length === 0 ? (
         <p>No games in your collection yet.</p>
       ) : (
-        <ul>
+        <ul className="game-list">
           {mutationError && <p className="error">{mutationError}</p>}
-          {data.myCollection.map((game) => (
-            <li key={game._id} className="game-item">
-              {game.imageUrl && (
-                <img
-                  src={game.imageUrl}
-                  alt={game.name}
-                  className="game-image"
-                />
-              )}
-              <Link to={`/game/${game.gameId}`} className="game-link">
-                <h3 className="game-title">{game.name}</h3>
-              </Link>
-              <button
-                onClick={() => handleRemove(game.gameId)}
-                className="remove-button"
-              >
-                Remove from Collection
-              </button>
-              <div className="comment-section">
-                {editMode[game.gameId] ? (
-                  <textarea
-                    value={comments[game.gameId] !== undefined ? comments[game.gameId] : game.comment || ""}
-                    onChange={(e) => handleCommentChange(game.gameId, e.target.value)}
-                    placeholder="Write a review..."
-                    rows="3"
-                    className="comment-input"
+          {data.myCollection.map((game) => {
+            const reviewText = localComments[game.gameId] || game.comment || "No review yet";
+            const isLongReview = reviewText.length > PREVIEW_LENGTH;
+            const isExpanded = expandedReviews[game.gameId] || false;
+            const previewText = isLongReview && !isExpanded
+              ? reviewText.substring(0, PREVIEW_LENGTH) + "..."
+              : reviewText;
+
+            return (
+              <li key={game._id} className="game-item">
+                {game.imageUrl && (
+                  <img
+                    src={game.imageUrl}
+                    alt={game.name}
+                    className="game-image"
                   />
-                ) : (
-                  <p className="comment-text">{localComments[game.gameId] || game.comment || "No review yet"}</p>
                 )}
-                <button
-                  onClick={() => editMode[game.gameId] ? handleCommentSubmit(game.gameId, game.comment) : toggleEditMode(game.gameId, game.comment)}
-                  className="review-button"
-                  disabled={saving[game.gameId]}
-                >
-                  {saving[game.gameId] ? "Saving..." : editMode[game.gameId] ? "Save Review" : "Edit Review"}
-                </button>
-              </div>
-            </li>
-          ))}
+                <Link to={`/game/${game.gameId}`} className="game-link">
+                  <h3 className="game-title">{game.name}</h3>
+                </Link>
+                <div className="comment-section">
+  {editMode[game.gameId] ? (
+    <textarea
+      value={comments[game.gameId] !== undefined ? comments[game.gameId] : game.comment || ""}
+      onChange={(e) => handleCommentChange(game.gameId, e.target.value)}
+      placeholder="Write a review..."
+      rows="3"
+      className="comment-input"
+    />
+  ) : (
+    <p className="comment-text">{previewText}</p>
+  )}
+  {isLongReview && (
+    <button
+      onClick={() => toggleReviewExpand(game.gameId)}
+      className="toggle-review-button"
+    >
+      {isExpanded ? "Show less" : "Show more"}
+    </button>
+  )}
+  <button
+    onClick={() => editMode[game.gameId] ? handleCommentSubmit(game.gameId, game.comment) : toggleEditMode(game.gameId, game.comment)}
+    className="review-button"
+    disabled={saving[game.gameId]}
+  >
+    {saving[game.gameId] ? "Saving..." : editMode[game.gameId] ? "🖫" : "🖉"}
+  </button>
+  <button
+    onClick={() => handleRemove(game.gameId)}
+    className="remove-button"
+  >
+    🗑
+  </button>
+</div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
